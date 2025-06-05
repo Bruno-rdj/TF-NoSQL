@@ -1,0 +1,47 @@
+# Comandos para testar o projeto MongoDB
+
+# 1. Iniciar os containers Docker
+docker-compose up -d
+
+# 2. Conectar ao MongoDB
+docker exec -it mongodb-nosql-projeto mongosh
+
+# 3. Executar o script de configuração
+load("/setup_mongodb.js")
+
+# 4. Executar o script de consultas
+load("/consultas_mongodb.js")
+
+# 5. Comandos individuais para testar manualmente
+
+# Usar o banco de dados
+use sistema_entregas
+
+# Consultar entregas em trânsito de um cliente específico
+db.entregas.find(
+  { 
+    "cliente_id": "CLI987654", 
+    "status": "em_transito" 
+  },
+  {
+    "_id": 1,
+    "origem": 1,
+    "destino": 1,
+    "datas": 1
+  }
+).pretty()
+
+# Analisar a performance da consulta
+db.entregas.find(
+  { 
+    "cliente_id": "CLI987654", 
+    "status": "em_transito" 
+  }
+).explain("executionStats")
+
+# Verificar os índices criados
+db.entregas.getIndexes()
+
+# 6. Parar os containers quando terminar
+# (Execute este comando em um novo terminal)
+docker-compose down
